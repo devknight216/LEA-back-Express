@@ -20,7 +20,7 @@ const PropertySchema = new Schema({
     city: { type: String },
     state: { type: String },
     country: { type: String },
-    zip: { type: String }
+    zip: { type: Number }
   }),
   propertyType: { type: String, enum: ['Apartment', 'House', 'Condo / Townhome', 'Secondary Unit', 'Unique Space', 'Bed and Breakfast', 'Boutique Hotel', 'Duplex', 'RV / Camper', 'Tiny House'] },
   propertySpaceFeature: { type: String, enum: ['An entire place', 'A private room', 'A shared room'] },

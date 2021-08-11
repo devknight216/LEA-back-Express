@@ -3,6 +3,7 @@ const mongoose = require("mongoose") // Connector for MongoDB
 const bodyParser = require("body-parser") // Let us use requests
 const apiRoutes = require('./routes/api')
 const passport = require("passport")
+const cors = require('cors')
 const config = require('./config/keys')
 
 // require the const endpointName = require("./routes/api/endpointName"); here
@@ -13,6 +14,9 @@ const app = express();
 // body-parser: extract the entire body portion of incoming request and exposes it on request.body
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+// Allow cors
+app.use(cors)
 
 // MongoDB config og connection
 const db = require("./config/keys").mongoURI;
