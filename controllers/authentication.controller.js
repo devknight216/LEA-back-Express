@@ -53,7 +53,7 @@ const login = (req, res) => {
     return res.status(400).json(errors);
   }
 
-  const {email, password, rememberMe} = req.body;
+  const {email, password} = req.body;
 
   // Find user by email
   User.findOne({ email }).then(user => {
@@ -78,7 +78,7 @@ const login = (req, res) => {
           payload,
           keys.secretOrKey,
           {
-            expiresIn: rememberMe ? 31556926 : 24*3600
+            expiresIn: 31556926 // 1 year in seconds
           },
           (err, token) => {
             res.json({

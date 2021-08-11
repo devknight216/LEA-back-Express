@@ -3,9 +3,6 @@ const mongoose = require("mongoose"); // Connector for MongoDB
 const bodyParser = require("body-parser"); // Let us use requests
 const apiRoutes = require('./routes/api')
 const passport = require("passport");
-const dotenv = require('dotenv');
-
-dotenv.config();
 
 // require the const endpointName = require("./routes/api/endpointName"); here
 
@@ -37,6 +34,6 @@ require("./config/passport")(passport);
 
 app.use('/api', apiRoutes);
 
-const port = process.env.PORT || 5000; // Sets port for server
+const port = 5000; // Sets port for server
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
