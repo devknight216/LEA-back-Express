@@ -37,7 +37,7 @@ function list(req, res, next) {
 
 function remove(req, res, next) {
   req.property.remove(() => {
-    res.json({ message: 'Property removed successfully'})
+    res.json(req.property)
   })
   .catch(next)
 }
