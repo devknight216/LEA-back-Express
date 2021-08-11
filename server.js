@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose"); // Connector for MongoDB
 const bodyParser = require("body-parser"); // Let us use requests
 const apiRoutes = require('./routes/api')
+const passport = require("passport");
 
 // require the const endpointName = require("./routes/api/endpointName"); here
 
@@ -9,6 +10,7 @@ const app = express();
 
 // Middleware for BodyParser
 // body-parser: extract the entire body portion of incoming request and exposes it on request.body
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // MongoDB config og connection
@@ -21,6 +23,14 @@ mongoose
 
 // Uses the routes from routes/api/items.js
 //app.use("/api/endpointName", endpointName);
+
+
+// Passport middleware
+app.use(passport.initialize());
+
+// Passport config
+require("./config/passport")(passport);
+
 
 app.use('/api', apiRoutes);
 

@@ -1,6 +1,7 @@
 module.exports = {
   // mongoURI: "mongodb://URL:27017/myproject"
-  mongoURI: "mongodb://localhost:27017/myproject"
+  mongoURI: "mongodb://localhost:27017/myproject",
+  secretOrKey: "secret"
 };
 
 // mongodb: is the protocol definition
