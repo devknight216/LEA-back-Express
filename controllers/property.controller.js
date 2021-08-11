@@ -4,6 +4,11 @@ const Property = require('../models/property.model')
 function create(req, res, next) {
   const property = new Property(req.body)
 
+  Property.find({
+    propertyName : req.body.propertyName,
+    zip: req.body.propertyLocation.zip
+  })
+
   property.save()
   .then((newProperty) => {
     res.json(newProperty)

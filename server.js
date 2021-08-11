@@ -1,8 +1,9 @@
-const express = require("express");
-const mongoose = require("mongoose"); // Connector for MongoDB
-const bodyParser = require("body-parser"); // Let us use requests
+const express = require("express")
+const mongoose = require("mongoose") // Connector for MongoDB
+const bodyParser = require("body-parser") // Let us use requests
 const apiRoutes = require('./routes/api')
-const passport = require("passport");
+const passport = require("passport")
+const config = require('./config/keys')
 
 // require the const endpointName = require("./routes/api/endpointName"); here
 
@@ -31,9 +32,8 @@ app.use(passport.initialize());
 // Passport config
 require("./config/passport")(passport);
 
-
 app.use('/api', apiRoutes);
 
-const port = 5000; // Sets port for server
+const port = config.port || 5000; // Sets port for server
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
