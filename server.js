@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Allow cors
-app.use(cors)
+app.use(cors())
 
 // MongoDB config og connection
 const db = require("./config/keys").mongoURI;
