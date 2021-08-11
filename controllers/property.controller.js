@@ -6,12 +6,18 @@ function create(req, res, next) {
 
   Property.find({
     propertyName : req.body.propertyName,
-    zip: req.body.propertyLocation.zip
+    'propertyLocation.zip': req.body.propertyLocation.zip
   })
-
-  property.save()
-  .then((newProperty) => {
-    res.json(newProperty)
+  .then((result) => {
+    if (!result.length) {
+      property.save()
+      .then((newProperty) => {
+        res.json(newProperty)
+      })
+      .catch(next)
+    } else {
+      res.json({ message: 'Property already exist'})
+    }
   })
   .catch(next)
 }
