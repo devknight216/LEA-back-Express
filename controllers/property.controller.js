@@ -4,9 +4,20 @@ const Property = require('../models/property.model')
 function create(req, res, next) {
   const property = new Property(req.body)
 
-  property.save()
-  .then((newProperty) => {
-    res.json(newProperty)
+  Property.find({
+    propertyName : req.body.propertyName,
+    'propertyLocation.zip': req.body.propertyLocation.zip
+  })
+  .then((result) => {
+    if (!result.length) {
+      property.save()
+      .then((newProperty) => {
+        res.json(newProperty)
+      })
+      .catch(next)
+    } else {
+      res.json({ message: 'Property already exist'})
+    }
   })
   .catch(next)
 }
@@ -36,8 +47,9 @@ function list(req, res, next) {
 }
 
 function remove(req, res, next) {
-  req.property.remove(() => {
-    res.json(req.property)
+  req.property.remove()
+  .then(() => {
+    res.json({ message: 'Property removed successfully'})
   })
   .catch(next)
 }

@@ -5,40 +5,32 @@ const PropertySchema = new Schema({
   propertyName: { type: String },
   nightlyRate: { type: Number },
   propertyDescription: { type: String },
-  createdData: { type: String },
-  images: new Schema({
-    fileName: { type: String },
+  imageURLs: [new Schema({
+    filename: { type: String },
     url: { type: String }
-  }),
-  hostedBy: new Schema({
+  })],
+  hostInfo: new Schema({
     name: { type: String },
     email: { type: String },
-    phoneNumber: { type: String },
-    location: { type: String }
+    userId: { type: String }
   }),
   propertyLocation: new Schema({
-    country: { type: String },
-    streetAddress: { type: String },
+    apartment: { type: String },
+    street: { type: String },
     city: { type: String },
-    stateProvice: { type: String },
-    zip: { type: String }
+    state: { type: String },
+    country: { type: String },
+    zip: { type: Number }
   }),
-  propertyFeatures: new Schema({
-    placeFeature: { type: String, enum: ['Apartment', 'House', 'Secondary Unit', 'Unique Space', 'Bed and Breakfast', 'Boutique Hotel'] },
-    placeDescribe: { type: String, enum: ['Rental Unit', 'Condominium (Condo)', 'Loft', 'Serviced Apartment'] },
-    placeSpaceFeature: { type: String, enum: ['An entire place', 'A private room', 'A sahred room'] },
-    guestNum: { type: Number },
-    bedNum: { type: Number },
-    bedroomNum: { type: Number },
-    bathroomNum: { type: Number },
-    placeOffer: new Schema({
-      standoutAmenities: [{ type: String }],
-      guestFavorites: [{ type: String }],
-      safetyItem: [{ type: String }]
-    }),
-    specialDescribe: [{ type: String }],
-    fewQuestions: [{ type: String }]
-  }),
+  propertyType: { type: String, enum: ['Apartment', 'House', 'Condo / Townhome', 'Secondary Unit', 'Unique Space', 'Bed and Breakfast', 'Boutique Hotel', 'Duplex', 'RV / Camper', 'Tiny House'] },
+  propertySpaceFeature: { type: String, enum: ['An entire place', 'A private room', 'A shared room'] },
+  guestNum: { type: Number },
+  bedsNum: { type: Number },
+  bedroomNum: { type: Number },
+  bathroomNum: { type: Number },
+  amenities: { type: Array },
+  propertyDescribe: { type: Array },
+  propertyspecialFeature: { type: Array },
   airBnbLink: { type: String }
 })
 

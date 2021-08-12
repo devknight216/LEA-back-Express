@@ -83,7 +83,11 @@ const login = (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token
+              token: "Bearer " + token,
+              _id: user._id,
+              name: user.name,
+              email: user.email,
+              role: user.role
             });
           }
         );
