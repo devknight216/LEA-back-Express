@@ -118,7 +118,7 @@ function searchProperties(req, res, next) {
     propertySpaceFeature,
     guestNum,
     amenities
-  } = req.params
+  } = req.body
 
   let where = {}
 
