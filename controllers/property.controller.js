@@ -109,6 +109,34 @@ function removePropertyImages(req, res, next) {
   .catch(next)
 }
 
+function searchProperties(req, res, next) {
+  const {
+    nightlyRateRangeFrom,
+    nightlyRateRangeTo,
+    location,
+    propertyType,
+    propertySpaceFeature,
+    guestNum,
+    amenities
+  } = req.params
+
+  let where = {}
+
+  if (nightlyRateRangeFrom !== '') where = { nightlyRate: { $gte: nightlyRateRangeFrom }}
+  if (nightlyRateRangeTo !== '') Object.assign(where, { nightlyRate: { $lte: nightlyRateRangeTo } })
+  if (location !== {}) Object.assign(where, { propertyLocation: location })
+  if (propertyType) Object.assign(where, { propertyType })
+  if (propertySpaceFeature) Object.assign(where, { propertySpaceFeature })
+  if (guestNum) Object.assign(where, { guestNum })
+  if (amenities.length) Object.assign(where, { amenities })
+
+  Property.find(where)
+  .then((properties) => {
+    res.json(properties)
+  })
+  .catch(next)
+}
+
 module.exports = {
   create,
   update,
@@ -118,5 +146,6 @@ module.exports = {
   getPropertyById,
   uploadImage,
   getPropertyImages,
-  removePropertyImages
+  removePropertyImages,
+  searchProperties
 }
