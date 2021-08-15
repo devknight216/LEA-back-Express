@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const passport = require("passport");
 const nodemailer = require("nodemailer");
+const mongoose = require('mongoose');
 
 const User = require('../models/user.model')
 const keys = require("../config/keys");
@@ -30,7 +31,7 @@ const register = (req, res) => {
 
   User.findOne({ email: req.body.email }).then(user => {
     if (user) {
-      return res.status(400).json({ email: "Email already exists" });
+      return res.status(400).json({ message: "Email already exists" });
     } else {
       const newUser = new User({
         _id: new mongoose.Types.ObjectId,
@@ -41,12 +42,14 @@ const register = (req, res) => {
       });
 
       // Generate a verification token with the user's ID
-      const verificationToken = user.generateVerificationToken();
-
+      const verificationToken = newUser.generateVerificationToken();
+      const server_port = keys.port;
+      const siteURL = keys.siteURL;
       // Email the user a unique verification link
-      const url = `http://localhost:5000/api/verify/${verificationToken}`;
+      const url = `${siteURL}:${server_port}/api/verify/${verificationToken}`;
 
       const {email} = req.body; 
+
       transporter.sendMail({
         to: email,
         subject: 'Verify Account',
@@ -83,12 +86,12 @@ const login = (req, res) => {
   User.findOne({ email }).then(user => {
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(404).json({ message: "Email not found" });
     }
 
     // Check if user has been verified
     if(!user.verified){
-      return res.status(403).send({ 
+      return res.status(403).json({ 
             message: "Verify your Account." 
       });
     }
@@ -125,18 +128,18 @@ const login = (req, res) => {
       } else {
         return res
           .status(400)
-          .json({ passwordincorrect: "Password incorrect" });
+          .json({ message: "Password incorrect" });
       }
     });
   }); 
 }
 
 const verify = (req, res) => {
-  const token = req.params;
-
+  const token = req.params['token'];
+  console.log("asdfa:",token);
   // Check we have an id
   if (!token) {
-    return res.status(422).send({ 
+    return res.status(422).json({ 
          message: "Missing Token" 
     });
   }
@@ -149,60 +152,63 @@ const verify = (req, res) => {
          process.env.USER_VERIFICATION_TOKEN_SECRET
       );
   } catch (err) {
-      return res.status(500).send(err);
+      return res.status(500).json(err);
   }
 
   try{
     // Find user with matching ID
     User.findOne({ _id: payload.ID }).then(user => {
       if (!user) {
-        return res.status(404).send({ 
+        return res.status(404).json({ 
            message: "User does not  exists" 
         });
       }
       // Update user verification status to true
       user.verified = true;
-      // await user.save();
-      return res.status(200).send({
+      user.save();
+      return res.status(200).json({
            message: "Account Verified"
       });
     });
     
   } catch (err) {
-    return res.status(500).send(err);
+    return res.status(500).json(err);
   }
 }
 
 const forgot = (req, res) => {
   const {email} = req.body;
-  User.findOne({email}).then(user=>{
-
+  User.findOne({email})
+  .then(user=>{
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(404).json({ message: "Email not found" });
     } else {
       const crypto = require('crypto');
       const buf = crypto.randomBytes(20);
       token = buf.toString('hex');
       user.resetPasswordToken = token;
-      const url = `http://localhost:5000/api/reset/${token}`;
+      user.save();
+      const server_port = keys.port;
+      const siteURL = keys.siteURL;
+      const url = `${siteURL}:${server_port}/api/reset/${token}`;
 
       transporter.sendMail({
         to: email,
         subject: 'Reset Password',
         html: `Click <a href = '${url}'>here</a> to confirm your email.`
       });
+      return res.status(200).json({message: "success"});
     }
-
   });
 }
 
 const reset = (req, res) => {
-  const token = req.params;
+  const token = req.params['token'];
 
   // Check we have an id
   if (!token) {
-    return res.status(422).send({ 
+    return res.status(422).json({ 
          message: "Missing Token" 
     });
   }
@@ -210,7 +216,7 @@ const reset = (req, res) => {
   // Find user with matching ID
   User.findOne({ resetPasswordToken: token }).then(user => {
     if (!user) {
-      return res.status(404).send({ 
+      return res.status(404).json({ 
          message: "User does not  exists" 
       });
     }
@@ -221,22 +227,23 @@ const reset = (req, res) => {
 }
 
 const store_password = (req, res) => {
-  const {email, password} = req.body;
+  const {email, password, token} = req.body;
 
   User.findOne({email}).then(user=>{
 
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ emailnotfound: "Email not found" });
+      return res.status(404).json({ message: "Email not found" });
     } else {
-      user.password = password;
-
+      if(user.resetPasswordToken!=token){
+        return res.status(401).json({ message: "Not allowed to reset password" })
+      }  
       // Hash password before saving in database
       bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
+        bcrypt.hash(password, salt, (err, hash) => {
           if (err) throw err;
-          newUser.password = hash;
-          newUser
+          user.password = hash;
+          user
             .save()
             .then(user => res.json(user))
             .catch(err => {
@@ -246,6 +253,8 @@ const store_password = (req, res) => {
       });
     }
 
+
+    return res.json({message: "success"});
   });
 }
 
