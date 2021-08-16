@@ -13,12 +13,4 @@ router.post("/register", authenticationController.register);
 // @access Public
 router.post("/login", authenticationController.login);
 
-router.get('/verify/:token', authenticationController.verify);
-
-router.post('/forgot', authenticationController.forgot);
-
-router.post('/store_password', authenticationController.store_password);
-
-router.get('/reset/:token', authenticationController.reset);
-
 module.exports = router;

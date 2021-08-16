@@ -5,23 +5,23 @@ const PropertySchema = new Schema({
   propertyName: { type: String },
   nightlyRate: { type: Number },
   propertyDescription: { type: String },
-  imageURLs: [new Schema({
+  imageURLs: [{
     filename: { type: String },
     url: { type: String }
-  })],
-  hostInfo: new Schema({
+  }],
+  hostInfo: {
     name: { type: String },
     email: { type: String },
     userId: { type: String }
-  }),
-  propertyLocation: new Schema({
+  },
+  propertyLocation: {
     apartment: { type: String },
     street: { type: String },
     city: { type: String },
     state: { type: String },
     country: { type: String },
     zip: { type: Number }
-  }),
+  },
   propertyType: { type: String, enum: ['Apartment', 'House', 'Condo / Townhome', 'Secondary Unit', 'Unique Space', 'Bed and Breakfast', 'Boutique Hotel', 'Duplex', 'RV / Camper', 'Tiny House'] },
   propertySpaceFeature: { type: String, enum: ['An entire place', 'A private room', 'A shared room'] },
   guestNum: { type: Number },

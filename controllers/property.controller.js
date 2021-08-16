@@ -74,7 +74,7 @@ function uploadImage(req, res, next) {
   Property.findById(propertyId)
   .then((property) => {
     property.images.push({
-      fileName: req.body.fileName,
+      filename: req.body.fileName,
       url: req.body.url
     })
 
@@ -109,6 +109,34 @@ function removePropertyImages(req, res, next) {
   .catch(next)
 }
 
+function searchProperties(req, res, next) {
+  const {
+    nightlyRateRangeFrom,
+    nightlyRateRangeTo,
+    location,
+    propertyType,
+    propertySpaceFeature,
+    guestNum,
+    amenities
+  } = req.body
+
+  let where = {}
+
+  if (nightlyRateRangeFrom !== '') where = { nightlyRate: { $gte: nightlyRateRangeFrom }}
+  if (nightlyRateRangeTo !== '') Object.assign(where, { nightlyRate: { $lte: nightlyRateRangeTo } })
+  if (JSON.stringify(location) !== JSON.stringify({})) Object.assign(where, { propertyLocation: location })
+  if (propertyType) Object.assign(where, { propertyType })
+  if (propertySpaceFeature) Object.assign(where, { propertySpaceFeature })
+  if (guestNum) Object.assign(where, { guestNum })
+  if (amenities.length) Object.assign(where, { amenities })
+
+  Property.find(where)
+  .then((properties) => {
+    res.json(properties)
+  })
+  .catch(next)
+}
+
 module.exports = {
   create,
   update,
@@ -118,5 +146,6 @@ module.exports = {
   getPropertyById,
   uploadImage,
   getPropertyImages,
-  removePropertyImages
+  removePropertyImages,
+  searchProperties
 }

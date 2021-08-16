@@ -14,6 +14,9 @@ router.route('/images/:propertyId')
   .get(propertyController.getPropertyImages)
   .post(propertyController.removePropertyImages)
 
+router.route('/search')
+  .post(propertyController.searchProperties)
+
 router.route('/:propertyId')
   .get(propertyController.read)
   .put(propertyController.update)
