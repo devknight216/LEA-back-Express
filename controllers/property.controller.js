@@ -74,7 +74,7 @@ function uploadImage(req, res, next) {
   Property.findById(propertyId)
   .then((property) => {
     property.images.push({
-      filename: req.body.fileName,
+      fileName: req.body.fileName,
       url: req.body.url
     })
 
