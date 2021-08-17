@@ -70,7 +70,8 @@ const login = (req, res) => {
         const payload = {
           id: user.id,
           email: user.email,
-          name: user.name
+          name: user.name,
+          role: user.role
         };
 
         // Sign token
@@ -83,7 +84,11 @@ const login = (req, res) => {
           (err, token) => {
             res.json({
               success: true,
-              token: "Bearer " + token
+              token: "Bearer " + token,
+              _id: user._id,
+              name: user.name,
+              email: user.email,
+              role: user.role
             });
           }
         );

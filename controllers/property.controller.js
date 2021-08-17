@@ -4,9 +4,20 @@ const Property = require('../models/property.model')
 function create(req, res, next) {
   const property = new Property(req.body)
 
-  property.save()
-  .then((newProperty) => {
-    res.json(newProperty)
+  Property.find({
+    propertyName : req.body.propertyName,
+    'propertyLocation.zip': req.body.propertyLocation.zip
+  })
+  .then((result) => {
+    if (!result.length) {
+      property.save()
+      .then((newProperty) => {
+        res.json(newProperty)
+      })
+      .catch(next)
+    } else {
+      res.json({ message: 'Property already exist'})
+    }
   })
   .catch(next)
 }
@@ -36,8 +47,9 @@ function list(req, res, next) {
 }
 
 function remove(req, res, next) {
-  req.property.remove(() => {
-    res.json(req.property)
+  req.property.remove()
+  .then(() => {
+    res.json({ message: 'Property removed successfully'})
   })
   .catch(next)
 }
@@ -61,9 +73,9 @@ function uploadImage(req, res, next) {
 
   Property.findById(propertyId)
   .then((property) => {
-    property.images.push({
-      fileName: req.body.fileName,
-      url: req.body.url
+    property.imageURLs.push({
+      filename: req.body.imageURLs.filename,
+      url: req.body.imageURLs.url
     })
 
     property.save()
@@ -97,6 +109,34 @@ function removePropertyImages(req, res, next) {
   .catch(next)
 }
 
+function searchProperties(req, res, next) {
+  const {
+    nightlyRateRangeFrom,
+    nightlyRateRangeTo,
+    location,
+    propertyType,
+    propertySpaceFeature,
+    guestNum,
+    amenities
+  } = req.body
+
+  let where = {}
+
+  if (nightlyRateRangeFrom !== '') where = { nightlyRate: { $gte: nightlyRateRangeFrom }}
+  if (nightlyRateRangeTo !== '') Object.assign(where, { nightlyRate: { $lte: nightlyRateRangeTo } })
+  if (JSON.stringify(location) !== JSON.stringify({})) Object.assign(where, { propertyLocation: location })
+  if (propertyType) Object.assign(where, { propertyType })
+  if (propertySpaceFeature) Object.assign(where, { propertySpaceFeature })
+  if (guestNum) Object.assign(where, { guestNum })
+  if (amenities.length) Object.assign(where, { amenities })
+
+  Property.find(where)
+  .then((properties) => {
+    res.json(properties)
+  })
+  .catch(next)
+}
+
 module.exports = {
   create,
   update,
@@ -106,5 +146,6 @@ module.exports = {
   getPropertyById,
   uploadImage,
   getPropertyImages,
-  removePropertyImages
+  removePropertyImages,
+  searchProperties
 }

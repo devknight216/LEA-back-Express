@@ -1,21 +1,19 @@
 const ROLES = require('../constants/role');
 
 const METHOD_RULES = {
-    INDEX: [ROLES.ADMIN, ROLES.USER],
+    INDEX: [ROLES.ADMIN],
     CREATE: [ROLES.ADMIN],
     UPDATE: [ROLES.ADMIN],
     DELETE: [ROLES.ADMIN],
-    READ: [ROLES.ADMIN, ROLES.USER]
+    READ: [ROLES.ADMIN]
 }
 
-const checkRolePermission = methodType => (req, res, next) => {
+const usersManagePermission = methodType => (req, res, next) => {
     if (!req.user) return res.status(401).json({error: 'Unauthorized'});
 
-    //console.log(req.user.role);
-
-    if (METHOD_RULES[methodType].includes(req.user.role)) return next();
+    if (METHOD_RULES[methodType].includes(req.user.role) || req.params.id === req.user.id) return next();
 
     return res.status(405).json({error: 'Method Not Allowed'});
 }
 
-module.exports = checkRolePermission;
+module.exports = usersManagePermission;
