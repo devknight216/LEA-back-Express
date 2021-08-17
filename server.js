@@ -1,10 +1,11 @@
-const express = require("express")
-const mongoose = require("mongoose") // Connector for MongoDB
-const bodyParser = require("body-parser") // Let us use requests
+const express = require("express");
+const mongoose = require("mongoose"); // Connector for MongoDB
+const bodyParser = require("body-parser"); // Let us use requests
 const apiRoutes = require('./routes/api')
-const passport = require("passport")
-const cors = require('cors')
-const config = require('./config/keys')
+const passport = require("passport");
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 // require the const endpointName = require("./routes/api/endpointName"); here
 
@@ -14,9 +15,6 @@ const app = express();
 // body-parser: extract the entire body portion of incoming request and exposes it on request.body
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-// Allow cors
-app.use(cors())
 
 // MongoDB config og connection
 const db = require("./config/keys").mongoURI;
@@ -36,8 +34,9 @@ app.use(passport.initialize());
 // Passport config
 require("./config/passport")(passport);
 
+
 app.use('/api', apiRoutes);
 
-const port = config.port || 5000; // Sets port for server
+const port = process.env.PORT || 5000; // Sets port for server
 
 app.listen(port, () => console.log(`Server started on port ${port}`));

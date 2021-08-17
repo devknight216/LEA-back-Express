@@ -1,14 +1,14 @@
-const dotenv = require('dotenv')
-
-// initializing env variables
-try {
-  dotenv.config()
-} catch (e) {
-  console.log('Could not find .env file. Continuing..')
-}
+const dotenv = require('dotenv');
+dotenv.config();
 
 module.exports = {
-  mongoURI: process.env.DB_URL,
-  secretOrKey: process.env.SECRETORKEY,
-  port: process.env.PORT
+  // mongoURI: "mongodb://URL:27017/myproject"
+  mongoURI: `${process.env.DB_URL || localhost}`,
+  secretOrKey: `${process.env.SECRETORKEY || secretOrKey}`
 };
+
+// mongodb: is the protocol definition
+// localhost: 27017 is the server we are connecting to
+// /myproject: is the database we wish to connect to
+
+// https://mongodb.github.io/node-mongodb-native/2.0/tutorials/connecting/
