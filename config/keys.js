@@ -9,6 +9,7 @@ try {
 
 module.exports = {
   mongoURI: process.env.DB_URL,
+  siteURL: process.env.SITE_URL,
   secretOrKey: process.env.SECRETORKEY,
   port: process.env.PORT
 };
