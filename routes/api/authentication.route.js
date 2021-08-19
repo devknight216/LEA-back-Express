@@ -21,4 +21,12 @@ router.post('/store_password', authenticationController.store_password);
 
 router.get('/reset/:token', authenticationController.reset);
 
+router.post('/phone_verify', authenticationController.phone_verify);
+
+router.post('/send', authenticationController.send);
+
+router.post('/send_code', authenticationController.sendCode);
+
+router.post('/check_code', authenticationController.checkCode);
+
 module.exports = router;

@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 
 const User = require('../models/user.model')
 const keys = require("../config/keys");
+const twilio = require("../service/twilio");
 
 // Load input validation
 const validateRegisterInput = require("../validation/register");
@@ -264,11 +265,50 @@ const store_password = (req, res) => {
   });
 }
 
+const phone_verify = (req, res) => {
+  const {body, to} = req.body;
+  twilio.sendSMS(body, to);
+  return res.status(200).json({message: "successfully sent"});
+}
+
+const send = (req, res) => {
+  const accountSid = process.env.TWILIO_ACCOUNT_SID;
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const phoneNumber = process.env.TWILIO_PHONE_NUMBER;
+  const client = require('twilio')(accountSid, authToken);
+
+  client.messages
+    .create({
+      body: 'This is the message from LEA',
+      from: '+16514017695',
+      to: '+12127290149'
+    })
+    .then(message => console.log(message.sid))
+    .catch(err => console.log(err));
+    return res.json({message: "success"});
+};
+
+const sendCode = (req, res) => {
+  const {to} = req.body;
+  twilio.sendCode(to);
+  return res.status(200).json({message: "verification code sent"});
+}
+
+const checkCode = (req, res) => {
+  const {to, code} =req.body;
+  twilio.checkCode(to, code);
+  return res.status(200).json({message: "verification code checked"});
+}
+
 module.exports = {
   login,
   register,
   verify,
   forgot,
   reset,
-  store_password
+  store_password,
+  phone_verify,
+  send,
+  sendCode,
+  checkCode,
 }

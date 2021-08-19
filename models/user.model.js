@@ -7,9 +7,15 @@ const UserSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: { type: String, required: true, trim: true, default: '' },
   email: { type: String, unique: true, required: true, trim: true },
+  phone: { type: String, unique: true, required: true, trim: true },
   password: { type: String },
   role: { type: String, required: true, enum: Object.values(ROLES), default: ROLES.USER },
   verified: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  phone_verified: {
     type: Boolean,
     required: true,
     default: false
