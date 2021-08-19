@@ -6,7 +6,9 @@ function create(req, res, next) {
 
   Property.find({
     propertyName : req.body.propertyName,
-    'propertyLocation.zip': req.body.propertyLocation.zip
+    propertyLocation: {
+      zip: req.body['propertyLocation.zip']
+    }
   })
   .then((result) => {
     if (!result.length) {
@@ -109,6 +111,62 @@ function removePropertyImages(req, res, next) {
   .catch(next)
 }
 
+
+function searchProperties(req, res, next) {
+  const {
+//    nightlyRateRangeFrom,
+//    nightlyRateRangeTo,
+    nightlyRate,
+    propertyLocation,
+    propertyType,
+    propertySpaceFeature,
+    guestNum,
+    amenities
+  } = req.body
+
+  let where = {}
+
+/*
+  if (nightlyRateRangeFrom !== '') where = { nightlyRate: { $gte: nightlyRateRangeFrom }}
+  if (nightlyRateRangeTo !== '') Object.assign(where, { nightlyRate: { $lte: nightlyRateRangeTo } })
+*/
+  if (nightlyRate !== '') Object.assign(where, { nightlyRate })
+//  if (JSON.stringify(propertyLocation) !== JSON.stringify({})) Object.assign(where, { "propertyLocation": propertyLocation })
+  if (propertyType) Object.assign(where, { propertyType })
+  if (propertySpaceFeature) Object.assign(where, { propertySpaceFeature })
+  if (guestNum) Object.assign(where, { guestNum })
+  if (amenities && amenities.length) Object.assign(where, { amenities })
+  if (propertyLocation) {
+    if(propertyLocation.state)
+      Object.assign(where, {"propertyLocation.state": propertyLocation.state})
+    if(propertyLocation.apartment)
+      Object.assign(where, {"propertyLocation.apartment": propertyLocation.apartment})
+    if(propertyLocation.street)
+      Object.assign(where, {"propertyLocation.street": propertyLocation.street})
+    if(propertyLocation.city)
+      Object.assign(where, {"propertyLocation.city": propertyLocation.city})
+    if(propertyLocation.country)
+      Object.assign(where, {"propertyLocation.country": propertyLocation.country})
+    if(propertyLocation.zip)
+      Object.assign(where, {"propertyLocation.zip": propertyLocation.zip})
+  }
+  if(JSON.stringify(where) === '{}'){
+    Property.find()
+    .then((properties) => {
+      return res.json(properties)
+    })
+    .catch(err => console.error(err));
+  }
+  else{
+    Property.find(where)
+    .then((properties) => {
+      return res.json(properties)
+    })
+    .catch(err => console.error(err))
+  }
+    
+}
+
 module.exports = {
   create,
   update,
@@ -118,5 +176,6 @@ module.exports = {
   getPropertyById,
   uploadImage,
   getPropertyImages,
-  removePropertyImages
+  removePropertyImages,
+  searchProperties
 }
