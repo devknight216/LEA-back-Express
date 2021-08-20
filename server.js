@@ -20,7 +20,6 @@ app.use(cors())
 
 // MongoDB config og connection
 const db = require("./config/keys").mongoURI;
-
 mongoose
   .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB Connected..."))
@@ -38,6 +37,6 @@ require("./config/passport")(passport);
 
 app.use('/api', apiRoutes);
 
-const port = config.port || 5000; // Sets port for server
+const port = config.port || 3001; // Sets port for server
 
 app.listen(port, () => console.log(`Server started on port ${port}`));
