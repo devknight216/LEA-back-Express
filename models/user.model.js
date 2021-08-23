@@ -21,7 +21,7 @@ const UserSchema = new Schema({
     default: false
   },
   resetPasswordToken: { type: String },
-  resetPasswordExpires: { type: Date }
+  resetPasswordExpires: { type: Date },
 });
 
 UserSchema.methods.generateVerificationToken = function () {
