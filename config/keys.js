@@ -10,6 +10,7 @@ try {
 module.exports = {
   // mongoURI: "mongodb://URL:27017/myproject"
   mongoURI: `${process.env.DB_URL || localhost}`,
+  siteURL: process.env.SITE_URL,
   secretOrKey: `${process.env.SECRETORKEY || secretOrKey}`,
   port: process.env.PORT
 };
