@@ -47,7 +47,7 @@ const register = (req, res) => {
       const server_port = keys.port;
       const siteURL = keys.siteURL;
       // Email the user a unique verification link
-      const url = `${siteURL}:${server_port}/api/verify/${verificationToken}`;
+      const url = `${siteURL}/verify/${verificationToken}`;
 
       const {email} = req.body; 
 
@@ -196,7 +196,7 @@ const forgot = (req, res) => {
       user.save();
       const server_port = keys.port;
       const siteURL = keys.siteURL;
-      const url = `${siteURL}:${server_port}/api/reset/${token}`;
+      const url = `${siteURL}/reset/${token}`;
 
       transporter.sendMail({
         to: email,
