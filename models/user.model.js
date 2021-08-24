@@ -22,6 +22,18 @@ const UserSchema = new Schema({
   },
   resetPasswordToken: { type: String },
   resetPasswordExpires: { type: Date },
+  reviews: [{ 
+    type: Schema.Types.ObjectId,
+    ref: 'Review'
+  }],
+  reservations: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Reservation'
+  }],
+  properties: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Property'
+  }]
 });
 
 UserSchema.methods.generateVerificationToken = function () {

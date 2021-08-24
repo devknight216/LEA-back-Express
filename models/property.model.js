@@ -41,7 +41,19 @@ const PropertySchema = new Schema({
   amenities: { type: Array },
   propertyDescribe: { type: Array },
   propertyspecialFeature: { type: Array },
-  airBnbLink: { type: String }
+  airBnbLink: { type: String },
+  reviews: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Review'
+  }],
+  reservations: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Reservation'
+  }],
+  host: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }
 })
 
 module.exports = mongoose.model('Property', PropertySchema)
