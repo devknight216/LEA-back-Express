@@ -135,7 +135,7 @@ function searchProperties(req, res, next) {
   if (propertyType) Object.assign(where, { propertyType })
   if (propertySpaceFeature) Object.assign(where, { propertySpaceFeature })
   if (guestNum) Object.assign(where, { guestNum })
-  if (amenities && amenities.length) Object.assign(where, { amenities })
+  if (amenities && amenities.length) Object.assign(where, {'amenities': {$all: amenities}} )
   if (propertyLocation) {
     if(propertyLocation.state)
       Object.assign(where, {"propertyLocation.state": propertyLocation.state})
