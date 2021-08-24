@@ -22,6 +22,15 @@ const PropertySchema = new Schema({
     country: { type: String },
     zip: { type: Number }
   },
+  petAllowFee: { 
+    number: { type: Number },
+    fee: { type: Number }
+  },
+  depositFee: { type: Number },
+  stagingFee: { 
+    hours: { type: Number },
+    rate: { type: Number }
+  },
   propertyType: { type: String, enum: ['Apartment', 'House', 'Condo / Townhome', 'Secondary Unit', 'Unique Space', 'Bed and Breakfast', 'Boutique Hotel', 'Duplex', 'RV / Camper', 'Tiny House'] },
   propertySpaceFeature: { type: String, enum: ['An entire place', 'A private room', 'A shared room'] },
   manageType: {type: String, enum: ['LEA', 'HOST']},

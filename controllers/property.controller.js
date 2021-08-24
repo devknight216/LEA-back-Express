@@ -130,7 +130,7 @@ function searchProperties(req, res, next) {
   if (nightlyRateRangeFrom !== '') where = { nightlyRate: { $gte: nightlyRateRangeFrom }}
   if (nightlyRateRangeTo !== '') Object.assign(where, { nightlyRate: { $lte: nightlyRateRangeTo } })
 */
-  if (nightlyRate !== '') Object.assign(where, { nightlyRate })
+  if (nightlyRate) Object.assign(where, { nightlyRate })
 //  if (JSON.stringify(propertyLocation) !== JSON.stringify({})) Object.assign(where, { "propertyLocation": propertyLocation })
   if (propertyType) Object.assign(where, { propertyType })
   if (propertySpaceFeature) Object.assign(where, { propertySpaceFeature })
