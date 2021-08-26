@@ -75,39 +75,50 @@ const update = (req, res) => {
             message: "Please fill all required field"
         });
     }
+    Object.assign(req.user, req.body)
+    
+    if(req.body.password){
+        const hashedpassword = req.body.password;
+        bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(hashedpassword, salt, (err, hash) => {
+            if (err) throw err;
 
-    const hashedpassword = req.body.password;
-    bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(hashedpassword, salt, (err, hash) => {
-          if (err) throw err;
+            // Find user and update it with the request body
+            User.findByIdAndUpdate(req.params.id, {
+                
+                password: hash,
+                
+            }, {new: true})
+            .then(user => {
+                if(!user) {
+                    return res.status(404).json({
+                        message: "user not found with id " + req.params.id
+                    });
+                }
+                res.json(user);
+            }).catch(err => {
+                if(err.kind === 'ObjectId') {
+                    return res.status(404).json({
+                        message: "user not found with id " + req.params.id
+                    });
+                }
+                return res.status(500).json({
+                    message: "Error updating user with id " + req.params.id
+                });
+            });
 
-          // Find user and update it with the request body
-          User.findByIdAndUpdate(req.params.id, {
-              name: req.body.name,
-              email: req.body.email,
-              password: hash,
-              role: req.body.role
-          }, {new: true})
-          .then(user => {
-              if(!user) {
-                  return res.status(404).json({
-                      message: "user not found with id " + req.params.id
-                  });
-              }
-              res.json(user);
-          }).catch(err => {
-              if(err.kind === 'ObjectId') {
-                  return res.status(404).json({
-                      message: "user not found with id " + req.params.id
-                  });
-              }
-              return res.status(500).json({
-                  message: "Error updating user with id " + req.params.id
-              });
-          });
-
+            });
         });
-      });
+    }
+    
+    req.user.save()
+    .then((updatedUser) => {
+        res.json(updatedUser)
+    })
+    .catch(err => {
+        return res.json({message: "Cannot Update"})
+    })
+    
 }
 
 const deleteOne = (req, res) => {
