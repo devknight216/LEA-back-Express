@@ -24,8 +24,9 @@
     "nodemailer": "^6.6.3",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-    "twilio": "^3.67.0",
     "sendmail": "^1.6.1",
+    "stripe": "^8.170.0",
+    "twilio": "^3.67.0",
     "validator": "^10.9.0"
   },
   "devDependencies": {
