@@ -114,6 +114,16 @@ const update = async (req, res) => {
                 
                 });
             });
+        } else {
+            try {
+                await user.save();
+                return res.json(user);
+            } catch (e) {
+                console.log(e);
+                return res.status(500).send({
+                    message: "Can not update"
+                });
+            }
         }
         
     }
