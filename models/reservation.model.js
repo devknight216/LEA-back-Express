@@ -8,9 +8,7 @@ const ReservationSchema = new Schema({
   guestNum: { type: Number },
   price: { type: Number },
   total: { type: Number },
-  guest: { type: Schema.ObjectId, ref: 'User' },
-  paymentIntentId: { type: String },
-  paymentStatus: { type: String }
+  guest: { type: Schema.ObjectId, ref: 'User' }
 })
 
 module.exports = mongoose.model('Reservation', ReservationSchema)
