@@ -33,10 +33,7 @@ const UserSchema = new Schema({
   properties: [{
     type: Schema.Types.ObjectId,
     ref: 'Property'
-  }],
-  isHost: {
-    type: Boolean
-  }
+  }]
 });
 
 UserSchema.methods.generateVerificationToken = function () {
