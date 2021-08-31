@@ -32,7 +32,7 @@ const PropertySchema = new Schema({
     rate: { type: Number }
   },
   propertyType: { type: String, enum: ['Apartment', 'House', 'Condo / Townhome', 'Secondary Unit', 'Unique place', 'Bed and Breakfast', 'Boutique Hotel', 'Duplex', 'RV / Camper', 'Tiny House'] },
-  propertySpaceFeature: { type: String, enum: ['An entire place', 'A private room', 'A shared room'] },
+  propertySpaceFeature: { type: String, enum: ['The whole place', 'A private room', 'A shared room'] },
   manageType: {type: String, enum: ['LEA', 'HOST']},
   guestNum: { type: Number },
   bedsNum: { type: Number },
