@@ -11,10 +11,5 @@ router.delete('/:id', passport.authenticate('jwt', {session: false}), reservatio
 
 router.get('/:id', passport.authenticate('jwt', {session: false}), reservationController.findOne);
 
-router.put('/:id', passport.authenticate('jwt', {session: false}), reservationController.updateStatus );
-
-router.get('/', passport.authenticate('jwt', {session: false}), reservationController.findAll)
-
-router.delete('/', passport.authenticate('jwt', {session: false}), reservationController.removeAll)
 
 module.exports = router;
