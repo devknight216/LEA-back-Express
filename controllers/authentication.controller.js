@@ -40,8 +40,7 @@ const register = (req, res) => {
         email: req.body.email,
         password: req.body.password,
         role: req.body.role,
-        phone: req.body.phone,
-        isHost: req.body.isHost
+        phone: req.body.phone
       });
 
       // Generate a verification token with the user's ID
@@ -129,8 +128,7 @@ const login = (req, res) => {
               name: user.name,
               email: user.email,
               role: user.role,
-              phone: user.phone,
-              isHost: user.isHost
+              phone: user.phone
             });
           }
         );
