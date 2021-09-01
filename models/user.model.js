@@ -10,6 +10,7 @@ const UserSchema = new Schema({
   phone: { type: String, unique: false, required: false, trim: true },
   password: { type: String },
   avatarURL: { type: String },
+  stripe_account: { type: String },
   role: { type: String, required: true, enum: Object.values(ROLES), default: ROLES.USER },
   verified: {
     type: Boolean,
