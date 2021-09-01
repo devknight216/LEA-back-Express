@@ -40,8 +40,7 @@ const register = (req, res) => {
         email: req.body.email,
         password: req.body.password,
         role: req.body.role,
-        phone: req.body.phone,
-        isHost: req.body.isHost
+        phone: req.body.phone
       });
 
       // Generate a verification token with the user's ID
@@ -129,9 +128,7 @@ const login = (req, res) => {
               name: user.name,
               email: user.email,
               role: user.role,
-              phone: user.phone,
-              isHost: user.isHost,
-              avatarURL: user.avatarURL
+              phone: user.phone
             });
           }
         );
@@ -306,36 +303,6 @@ const checkCode = (req, res) => {
   return res.status(200).json({message: "verification code checked"});
 }
 
-const stripe_account = async (req, res) => {
-  const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST_KEY)
-
-  const account = await stripe.accounts.create({
-    type: 'express',
-  });
-  if(!req.user.stripe_account){
-    req.user.stripe_account = await account;
-    await req.user.save();
-  }
-  return res.json(account);
-}
-
-const stripe_link = async (req, res) => {
-  const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST_KEY);
-
-  const refresh_url = await req.body.refresh_url;
-  const return_url = await req.body.return_url;
-  const account = await req.user.stripe_account;
-  const accountLinks = await stripe.accountLinks.create({
-    account,
-    refresh_url,
-    return_url,
-    type: 'account_onboarding',
-  });
-
-  return res.json(accountLinks);
-
-}
-
 module.exports = {
   login,
   register,
@@ -347,6 +314,4 @@ module.exports = {
   send,
   sendCode,
   checkCode,
-  stripe_account,
-  stripe_link
 }

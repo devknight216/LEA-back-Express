@@ -29,8 +29,4 @@ router.post('/send_code', authenticationController.sendCode);
 
 router.post('/check_code', authenticationController.checkCode);
 
-router.post('/stripe_account', authenticationController.stripe_account);
-
-router.post('/stripe_link', authenticationController.stripe_link);
-
 module.exports = router;

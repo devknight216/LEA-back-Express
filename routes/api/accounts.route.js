@@ -16,10 +16,4 @@ router.put("/:id", passport.authenticate('jwt', {session: false}), usersmanageMi
 
 router.delete("/:id", passport.authenticate('jwt', {session: false}), usersmanageMiddleware("DELETE"), accountsController.deleteOne);
 
-router.post("/avatar", passport.authenticate('jwt', {session: false}), usersmanageMiddleware("CREATE"), accountsController.uploadAvatar);
-
-router.route("/avatar/:userId")
-.get(passport.authenticate('jwt', {session: false}), usersmanageMiddleware("READ"), accountsController.getUserAvatar)
-.delete(passport.authenticate('jwt', {session: false}), usersmanageMiddleware("DELETE"), accountsController.removeUserAvatar);
-
 module.exports = router;
