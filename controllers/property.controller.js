@@ -58,8 +58,6 @@ function remove(req, res, next) {
 
 function getPropertyById(req, res, next, id) {
   Property.findById(id)
-  .populate('reservations')
-  .exec()
   .then((property) => {
     if (!property) {
       res.status(404).json({ message: 'Property not found' })

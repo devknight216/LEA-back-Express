@@ -3,17 +3,12 @@ const Schema = mongoose.Schema
 
 const ReservationSchema = new Schema({
   property: { type: Schema.ObjectId, ref: 'Property' },
-  from: { type: Date },
-  to: { type: Date },
-  adultNum: { type: Number },
-  childrenNum: { type: Number },
-  infantsNum: { type: Number },
-  petNum: { type: Number },
+  from: { type: String },
+  to: { type: String },
+  guestNum: { type: Number },
+  price: { type: Number },
   total: { type: Number },
-  guest: { type: Schema.ObjectId, ref: 'User' },
-  paymentIntentId: { type: String },
-  paymentStatus: { type: String },
-  status: { type: String }
+  guest: { type: Schema.ObjectId, ref: 'User' }
 })
 
 module.exports = mongoose.model('Reservation', ReservationSchema)
