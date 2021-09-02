@@ -11,7 +11,7 @@ const METHOD_RULES = {
 const usersManagePermission = methodType => (req, res, next) => {
     if (!req.user) return res.status(401).json({error: 'Unauthorized'});
 
-    if (METHOD_RULES[methodType].includes(req.user.role) || req.params.id === req.user.id  || req.body.userId === req.user.id) return next();
+    if (METHOD_RULES[methodType].includes(req.user.role) || req.params.id === req.user.id) return next();
 
     return res.status(405).json({error: 'Method Not Allowed'});
 }

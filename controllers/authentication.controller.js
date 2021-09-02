@@ -4,6 +4,7 @@ const passport = require("passport");
 const nodemailer = require("nodemailer");
 const mongoose = require('mongoose');
 
+
 const User = require('../models/user.model')
 const keys = require("../config/keys");
 const twilio = require("../service/twilio");
@@ -306,6 +307,38 @@ const checkCode = (req, res) => {
   return res.status(200).json({message: "verification code checked"});
 }
 
+const stripe_account = async (req, res) => {
+  const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST_KEY)
+  const email = req.user.email;
+  const account = await stripe.accounts.create({
+    type: 'express',
+    email
+  });
+  
+  if(!req.user.stripe_account){
+    req.user.stripe_account = await account.id;
+    await req.user.save();
+  }
+  return res.status(200);
+}
+
+const stripe_link = async (req, res) => {
+  const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST_KEY);
+
+  const refresh_url = await req.body.refresh_url;
+  const return_url = await req.body.return_url;
+  const account = await req.user.stripe_account;
+  const accountLinks = await stripe.accountLinks.create({
+    account,
+    refresh_url,
+    return_url,
+    type: 'account_onboarding',
+  });
+
+  return res.json(accountLinks.url);
+
+}
+
 module.exports = {
   login,
   register,
@@ -317,4 +350,6 @@ module.exports = {
   send,
   sendCode,
   checkCode,
+  stripe_account,
+  stripe_link
 }
