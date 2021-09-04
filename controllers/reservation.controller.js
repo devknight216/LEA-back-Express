@@ -55,6 +55,15 @@ const findAll = (req, res) => {
     });
 }
 
+// Get property Reservations by HostId
+const getByUserId = (req, res) => {
+    const userId = req.params.id;
+    Property.find({ host: userId }).populate('reservations').exec(function(err, properties){
+        if (err) return handleError(err);
+
+        res.json(properties);
+    });
+}
 
 // updateStatus method only updates the reservation status and payment status
 const updateStatus = async (req,res) => {
@@ -118,5 +127,6 @@ module.exports = {
     findOne,
     updateStatus,
     findAll,
-    removeAll
+    removeAll,
+    getByUserId
 }

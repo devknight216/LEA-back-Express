@@ -11,7 +11,7 @@ module.exports = function validateRegisterInput(data) {
   data.password = !isEmpty(data.password) ? data.password : "";
   data.password2 = !isEmpty(data.password2) ? data.password2 : "";
   data.name = !isEmpty(data.name) ? data.name : "";
-  data.role = !isEmpty(data.role) ? data.role : "";
+  //data.role = !isEmpty(data.role) ? data.role : "";
 
   // Name checks
   if (Validator.isEmpty(data.name)) {
@@ -43,11 +43,11 @@ module.exports = function validateRegisterInput(data) {
   }
 
   // Role checks
-  if (Validator.isEmpty(data.role)) {
-    errors.role = "Role field is required";
-  } else if (!Validator.isIn(data.role, Object.values(roles))) {
-    errors.role = "Invalid role field";
-  }
+  // if (Validator.isEmpty(data.role)) {
+  //   errors.role = "Role field is required";
+  // } else if (!Validator.isIn(data.role, Object.values(roles))) {
+  //   errors.role = "Invalid role field";
+  // }
 
   return {
     errors,

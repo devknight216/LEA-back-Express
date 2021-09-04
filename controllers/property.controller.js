@@ -12,9 +12,20 @@ function create(req, res, next) {
   })
   .then((result) => {
     if (!result.length) {
+      property.hostInfo.name = req.user.name;
+      property.hostInfo.email = req.user.email;
+      property.hostInfo.userId = req.user.id;
+      property.host = req.user.id;
       property.save()
       .then((newProperty) => {
-        res.json(newProperty)
+        req.user.properties.push(newProperty);
+        req.user.isHost = true;
+        req.user.save()
+        .then((newUser) => {
+          res.json(newProperty)
+        })
+        .catch(next)
+        //res.json(newProperty)
       })
       .catch(next)
     } else {
@@ -59,6 +70,7 @@ function remove(req, res, next) {
 function getPropertyById(req, res, next, id) {
   Property.findById(id)
   .populate('reservations')
+  .populate('reviews')
   .exec()
   .then((property) => {
     if (!property) {
@@ -70,6 +82,16 @@ function getPropertyById(req, res, next, id) {
     next()
   })
   .catch(next)
+}
+
+// Get Properties by HostId
+const getPropertiesByhostId = (req, res) => {
+  const hostId = req.params.id;
+  Property.find({ host: hostId }).populate('reservations').populate('reviews').exec(function(err, properties){
+      if (err) return handleError(err);
+
+      res.json(properties);
+  });
 }
 
 function uploadImage(req, res, next) {
@@ -179,5 +201,6 @@ module.exports = {
   uploadImage,
   getPropertyImages,
   removePropertyImages,
-  searchProperties
+  searchProperties,
+  getPropertiesByhostId
 }

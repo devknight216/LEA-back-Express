@@ -7,8 +7,20 @@ const UserSchema = new Schema({
   _id: mongoose.Schema.Types.ObjectId,
   name: { type: String, required: true, trim: true, default: '' },
   email: { type: String, unique: true, required: true, trim: true },
+  gender: { type: String, enum: ['male', 'femail'] },
+  birthday: { type: Date },
+  address: {
+    country: { type: String },
+    street: { type: String },
+    apt: { type: String },
+    city: { type: String },
+    state: { type: String },
+    zip: { type: String },
+  },
   phone: { type: String, unique: false, required: false, trim: true },
   password: { type: String },
+  avatarURL: { type: String },
+  stripe_account: { type: String },
   role: { type: String, required: true, enum: Object.values(ROLES), default: ROLES.USER },
   verified: {
     type: Boolean,
@@ -33,7 +45,11 @@ const UserSchema = new Schema({
   properties: [{
     type: Schema.Types.ObjectId,
     ref: 'Property'
-  }]
+  }],
+  isHost: {
+    type: Boolean,
+    default: false
+  }
 });
 
 UserSchema.methods.generateVerificationToken = function () {

@@ -15,6 +15,8 @@ router.put('/:id', passport.authenticate('jwt', {session: false}), reservationCo
 
 router.get('/', passport.authenticate('jwt', {session: false}), reservationController.findAll)
 
+router.get('/user/:id', passport.authenticate('jwt', {session: false}), reservationController.getByUserId)
+
 router.delete('/', passport.authenticate('jwt', {session: false}), reservationController.removeAll)
 
 module.exports = router;

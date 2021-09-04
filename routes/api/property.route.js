@@ -27,4 +27,6 @@ router.route('/:propertyId')
 
 router.param('propertyId', propertyController.getPropertyById)
 
+router.get('/user/:id', passport.authenticate('jwt', {session: false}), propertyController.getPropertiesByhostId)
+
 module.exports = router;

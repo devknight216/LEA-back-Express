@@ -14,13 +14,17 @@ const create = (req, res) => {
         if (user) {
           return res.status(400).json({ message: "Email already exists" });
         } else {
-          const newUser = new User({
-            name: req.body.name,
-            email: req.body.email,
-            password: req.body.password,
-            role: req.body.role
-          });
-    
+            const newUser = new User(req.body);
+            newUser._id = new mongoose.Types.ObjectId;
+        //   const newUser = new User({
+        //     _id: new mongoose.Types.ObjectId,
+        //     name: req.body.name,
+        //     email: req.body.email,
+        //     password: req.body.password,
+        //     role: req.body.role,
+        //     isHost: req.body.isHost
+        //   });
+          
           // Hash password before saving in database
           bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(newUser.password, salt, (err, hash) => {
@@ -68,56 +72,71 @@ const findOne = (req, res) => {
         });
 }
 
-const update = (req, res) => {
+const update = async (req, res) => {
      // Validate Request
     if(!req.body) {
         return res.status(400).send({
             message: "Please fill all required field"
         });
     }
-    Object.assign(req.user, req.body)
-    
-    if(req.body.password){
-        const hashedpassword = req.body.password;
-        bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(hashedpassword, salt, (err, hash) => {
-            if (err) throw err;
-
-            // Find user and update it with the request body
-            User.findByIdAndUpdate(req.params.id, {
-                
-                password: hash,
-                
-            }, {new: true})
-            .then(user => {
-                if(!user) {
-                    return res.status(404).json({
-                        message: "user not found with id " + req.params.id
-                    });
-                }
-                res.json(user);
-            }).catch(err => {
-                if(err.kind === 'ObjectId') {
-                    return res.status(404).json({
-                        message: "user not found with id " + req.params.id
-                    });
-                }
-                return res.status(500).json({
-                    message: "Error updating user with id " + req.params.id
-                });
-            });
-
-            });
+    if(req.body.email){
+        const userEmail = await User.find({email:req.body.email})
+        if(userEmail.length)
+            return res.json({message: 'User already exists with same email'})      
+    }
+    //Object.assign(req.user, req.body)
+    const user = await User.findById(req.params.id);
+        
+    if(!user) {
+        return res.status(404).json({
+            message: "user not found with id " + req.params.id
         });
     }
+    else{
+        Object.assign(user, req.body);
+        if(req.body.password){
+            const hashedpassword = req.body.password;
+            bcrypt.genSalt(10, async (err, salt) => {
+                bcrypt.hash(hashedpassword, salt, async (err, hash) => {
+                if (err) throw err;
+                else{
+                    user.password = hash;
+                    try {
+                        await user.save();
+                        return res.json(user);
+                    } catch (e) {
+                        console.log(e);
+                        return res.status(500).send({
+                            message: "Can not update"
+                        });
+                    }
+                }
+                
+                });
+            });
+        } else {
+            try {
+                await user.save();
+                return res.json(user);
+            } catch (e) {
+                console.log(e);
+                return res.status(500).send({
+                    message: "Can not update"
+                });
+            }
+        }
+        
+    }
+
     
-    req.user.save()
-    .then((updatedUser) => {
-        res.json(updatedUser)
-    })
-    .catch(err => {
-        return res.json({message: "Cannot Update"})
-    })
+    
+    // user.save()
+    // .then((updatedUser) => {
+    //     res.json(updatedUser)
+    // })
+    // .catch(err => {
+    //     return res.json({message: "Cannot Update"})
+    // })
     
 }
 
@@ -142,10 +161,52 @@ const deleteOne = (req, res) => {
     });
 }
 
+
+
+function uploadAvatar(req, res, next) {
+    const userId = req.body.userId
+  
+    User.findById(userId)
+    .then((user) => {
+      user.avatarURL = req.body.avatarURL  
+      user.save()
+      .then((updatedUser) => {
+        res.json(updatedUser)
+      })
+      .catch(next)
+    })
+    .catch(next)
+  }
+  
+function getUserAvatar(req, res, next) {
+    User.findById(req.params.userId)
+    .then((user) => {
+      res.json(user.avatarURL)
+    })
+    .catch(next)
+  }
+  
+function removeUserAvatar(req, res, next) {
+    User.findById(req.params.userId)
+    .then((user) => {
+      user.avatarURL = null
+  
+      user.save()
+      .then(() => {
+        res.json({ message: 'Avatar for user have been removed' })
+      })
+      .catch(next)
+    })
+    .catch(next)
+  }
+  
 module.exports = {
     create,
     findAll,
     findOne,
     update,
-    deleteOne
+    deleteOne,
+    uploadAvatar,
+    removeUserAvatar,
+    getUserAvatar
 }

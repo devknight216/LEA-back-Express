@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require("passport");
 const authenticationController = require('../../controllers/authentication.controller');
 
 const router = express.Router();
@@ -28,5 +29,9 @@ router.post('/send', authenticationController.send);
 router.post('/send_code', authenticationController.sendCode);
 
 router.post('/check_code', authenticationController.checkCode);
+
+router.post('/stripe_account', passport.authenticate('jwt', {session: false}), authenticationController.stripe_account);
+
+router.post('/stripe_link', passport.authenticate('jwt', {session: false}), authenticationController.stripe_link);
 
 module.exports = router;
