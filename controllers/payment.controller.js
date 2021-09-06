@@ -104,9 +104,9 @@ const savePaymentStatus = async (req, res) => {
 			reservation.paymentStatus = "Success";
 			await reservation.save();
 
-			const to = reservation.guest.phone;
-			const body = "Your payment intent succeeded";
-			twilio.sendSMS(body, to);
+			// const to = reservation.guest.phone;
+			// const body = "Your payment intent succeeded";
+			// twilio.sendSMS(body, to);
 
 			// const toEmail = reservation.guest.email;
 			// const subject = "Notification from LEA";
