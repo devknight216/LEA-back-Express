@@ -14,51 +14,50 @@ const calculateOrderAmount = async items => {
 	// Calculate the order total on the server to prevent
 	// people from directly manipulating the amount on the client
 	const propertyId = items.propertyId;
-	const nights = items.nights;
+	const nights = +items.nights;
 
 	// Retrieve property to get nightlyRate
 	const property = await Property.findById(propertyId);
-	const nightlyRate = property.nightlyRate;
+	const nightlyRate = +property.nightlyRate;
 	let depositFee = 0
 	let petAllowFee = 0
-	if(property.depositFee){
-		depositFee = property.depositFee;
+	if (property.depositFee) {
+		depositFee = +property.depositFee;
 	}
-	if(property.petAllowFee.fee){
-		petAllowFee = property.petAllowFee;
+	if (property.petAllowFee.fee) {
+		petAllowFee = +property.petAllowFee;
 	}
 	// Calculate the total price of the reservation
 	const sum = nightlyRate * nights + depositFee + petAllowFee;
-	const tax = 65*sum/1000;
-	const total = sum + tax;
+	const total = sum * 1065 / 1000;
 	return total;
-    
+
 };
 
 
 
 // Retrieve Reservation from ID
 const ReservationFind = async Id => {
-    
-	const reservation = await Reservation.findOne({paymentIntentId: Id}).populate('guest').exec()
+
+	const reservation = await Reservation.findOne({ paymentIntentId: Id }).populate('guest').exec()
 	return reservation;
 }
 
 
 // Create a PaymentIntent with the order amount and currency
-async function createIntent( req, res) {
+async function createIntent(req, res) {
 
 	const items = req.body;
 	const propertyId = items.propertyId;
 	const property = await Property.findById(propertyId);
 	const hostId = property.hostInfo.userId;
 	const host = await User.findById(hostId);
-	if(host.stripe_account){
+	if (host.stripe_account) {
 		const stripe_account = host.stripe_account;
-		const amount = await (await calculateOrderAmount(items)).toFixed(2)*100;
-		const account_amount = 97*amount/100;
+		const amount = (await calculateOrderAmount(items)).toFixed(2) * 100;
+		const account_amount = 97 * amount / 100;
 		const acc_amount = parseInt(account_amount);
-		
+		console.log(amount)
 		const paymentIntent = await stripe.paymentIntents.create({
 			payment_method_types: ['card'],
 			amount,
@@ -68,14 +67,14 @@ async function createIntent( req, res) {
 				destination: stripe_account
 			}
 		});
-		
+
 		res.json({
-				clientSecret: paymentIntent.client_secret
+			clientSecret: paymentIntent.client_secret
 		});
 	}
 	else
-		return res.json({message: "There is no stripe account for this host"})
-	
+		return res.json({ message: "There is no stripe account for this host" })
+
 }
 
 
@@ -84,7 +83,7 @@ async function createIntent( req, res) {
 const savePaymentStatus = async (req, res) => {
 	const event = req.body;
 	//const paymentIntent = null;
-	
+
 	switch (event.type) {
 		case 'payment_intent.succeeded':
 			const paymentIntent = event.data.object;
@@ -114,6 +113,6 @@ const savePaymentStatus = async (req, res) => {
 }
 
 module.exports = {
-    createIntent,
-    savePaymentStatus
+	createIntent,
+	savePaymentStatus
 }
