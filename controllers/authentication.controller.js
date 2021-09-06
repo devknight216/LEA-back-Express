@@ -310,14 +310,18 @@ const stripe_account = async (req, res) => {
   const email = req.user.email;
   const account = await stripe.accounts.create({
     type: 'express',
-    email
+    email,
+    capabilities: {
+      card_payments: {requested: true},
+      transfers: {requested: true},
+    },
   });
   
   if(!req.user.stripe_account){
     req.user.stripe_account = await account.id;
     await req.user.save();
   }
-  return res.status(200);
+  return res.status(200).json({message: "success"});
 }
 
 const stripe_link = async (req, res) => {
