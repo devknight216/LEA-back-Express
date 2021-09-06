@@ -58,6 +58,7 @@ async function createIntent( req, res) {
 		const amount = await (await calculateOrderAmount(items)).toFixed(2)*100;
 		const account_amount = 97*amount/100;
 		const acc_amount = parseInt(account_amount);
+		
 		const paymentIntent = await stripe.paymentIntents.create({
 			payment_method_types: ['card'],
 			amount,
