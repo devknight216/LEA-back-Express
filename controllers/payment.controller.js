@@ -54,10 +54,9 @@ async function createIntent(req, res) {
 	const host = await User.findById(hostId);
 	if (host.stripe_account) {
 		const stripe_account = host.stripe_account;
-		const amount = (await calculateOrderAmount(items)).toFixed(2) * 100;
+		const amount = parseInt((await calculateOrderAmount(items)) * 100);
 		const account_amount = 97 * amount / 100;
 		const acc_amount = parseInt(account_amount);
-		console.log(amount)
 		const paymentIntent = await stripe.paymentIntents.create({
 			payment_method_types: ['card'],
 			amount,
