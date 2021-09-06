@@ -25,7 +25,7 @@ const calculateOrderAmount = async items => {
 		depositFee = +property.depositFee;
 	}
 	if (property.petAllowFee.fee) {
-		petAllowFee = +property.petAllowFee;
+		petAllowFee = +property.petAllowFee.fee;
 	}
 	// Calculate the total price of the reservation
 	const sum = nightlyRate * nights + depositFee + petAllowFee;
