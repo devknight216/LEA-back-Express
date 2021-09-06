@@ -130,7 +130,8 @@ const login = (req, res) => {
               role: user.role,
               phone: user.phone,
               isHost: user.isHost,
-              avatarURL: user.avatarURL
+              avatarURL: user.avatarURL,
+              charges_enabled_status: user.charges_enabled_status
             });
           }
         );
@@ -340,7 +341,16 @@ const stripe_link = async (req, res) => {
   return res.json(accountLinks.url);
 
 }
+const stripe_check = async (req, res) => {
+  const stripe = require('stripe')(process.env.STRIPE_SECRET_TEST_KEY);
 
+  const account = await stripe.accounts.retrieve(req.user.stripe_account);
+  const status = account.charges_enabled;
+  req.user.charges_enabled_status = status;
+  await req.user.save();
+  console.log(req.user)
+  res.json({charges_enabled_status: status});
+}
 module.exports = {
   login,
   register,
@@ -353,5 +363,6 @@ module.exports = {
   sendCode,
   checkCode,
   stripe_account,
-  stripe_link
+  stripe_link,
+  stripe_check
 }

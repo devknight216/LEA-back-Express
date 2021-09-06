@@ -34,4 +34,6 @@ router.post('/stripe_account', passport.authenticate('jwt', {session: false}), a
 
 router.post('/stripe_link', passport.authenticate('jwt', {session: false}), authenticationController.stripe_link);
 
+router.post('/stripe_check', passport.authenticate('jwt', {session: false}), authenticationController.stripe_check);
+
 module.exports = router;

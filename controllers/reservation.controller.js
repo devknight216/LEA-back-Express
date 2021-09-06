@@ -69,7 +69,7 @@ const getByUserId = (req, res) => {
 const updateStatus = async (req,res) => {
     try {
         const reservation = await Reservation.findById(req.params.id);
-        
+        reservation.checkStatus = await req.body.checkStatus;
         reservation.status = await req.body.status;
         reservation.paymentStatus = await req.body.status;
         await reservation.save();   

@@ -13,7 +13,11 @@ const ReservationSchema = new Schema({
   guest: { type: Schema.ObjectId, ref: 'User' },
   paymentIntentId: { type: String },
   paymentStatus: { type: String },
-  status: { type: String }
+  status: { type: String },
+  checkStatus: { 
+    type: Boolean,
+    default: false
+  }
 })
 
 module.exports = mongoose.model('Reservation', ReservationSchema)

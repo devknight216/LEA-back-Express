@@ -49,6 +49,10 @@ const UserSchema = new Schema({
   isHost: {
     type: Boolean,
     default: false
+  },
+  charges_enabled_status: {
+    type: Boolean,
+    default: false
   }
 });
 

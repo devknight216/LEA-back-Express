@@ -15,6 +15,7 @@ const calculateOrderAmount = async items => {
 	// people from directly manipulating the amount on the client
 	const propertyId = items.propertyId;
 	const nights = +items.nights;
+	const flag = items.petAllowed;
 
 	// Retrieve property to get nightlyRate
 	const property = await Property.findById(propertyId);
@@ -24,7 +25,7 @@ const calculateOrderAmount = async items => {
 	if (property.depositFee) {
 		depositFee = +property.depositFee;
 	}
-	if (property.petAllowFee.fee) {
+	if (flag && property.petAllowFee.fee) {
 		petAllowFee = +property.petAllowFee.fee;
 	}
 	// Calculate the total price of the reservation
@@ -51,28 +52,40 @@ async function createIntent(req, res) {
 	const propertyId = items.propertyId;
 	const property = await Property.findById(propertyId);
 	const hostId = property.hostInfo.userId;
-	const host = await User.findById(hostId);
-	if (host.stripe_account) {
-		const stripe_account = host.stripe_account;
-		const amount = parseInt((await calculateOrderAmount(items)) * 100);
-		const account_amount = 97 * amount / 100;
-		const acc_amount = parseInt(account_amount);
-		const paymentIntent = await stripe.paymentIntents.create({
-			payment_method_types: ['card'],
-			amount,
-			currency: "usd",
-			transfer_data: {
-				amount: acc_amount,
-				destination: stripe_account
+	if(req.user.id!=hostId){
+		const host = await User.findById(hostId);
+		if (host.stripe_account) {
+			const stripe_account = host.stripe_account;
+			const amount = parseInt((await calculateOrderAmount(items)) * 100);
+			let account_amount = 0;
+			if( property.manageType == "LEA"){
+				account_amount = 80 * amount / 100;
 			}
-		});
+			else {
+				account_amount = 97 * amount / 100;
+			}
+			const acc_amount = parseInt(account_amount);
+			const paymentIntent = await stripe.paymentIntents.create({
+				payment_method_types: ['card'],
+				amount,
+				currency: "usd",
+				transfer_data: {
+					amount: acc_amount,
+					destination: stripe_account
+				}
+			});
 
-		res.json({
-			clientSecret: paymentIntent.client_secret
-		});
+			res.json({
+				clientSecret: paymentIntent.client_secret
+			});
+		}
+		else
+			return res.json({ message: "There is no stripe account for this host" })
 	}
-	else
-		return res.json({ message: "There is no stripe account for this host" })
+	else{
+		return res.json({message: "This property belongs to you"})
+	}
+	
 
 }
 
