@@ -19,8 +19,8 @@ const calculateOrderAmount = async items => {
 	// Retrieve property to get nightlyRate
 	const property = await Property.findById(propertyId);
 	const nightlyRate = property.nightlyRate;
-	const depositFee = 0
-	const petAllowFee = 0
+	let depositFee = 0
+	let petAllowFee = 0
 	if(property.depositFee){
 		depositFee = property.depositFee;
 	}
